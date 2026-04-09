@@ -60,15 +60,40 @@ if REDO_LIST   ||  ~isfile( HEART_SLICES_list )  %to prepare the list
   fprintf(fid,'%%PlaneName   SeriesNumber   EndDiastole    %%Comments\n\n');
   plane = {'LAX_4Ch','LAX_2Ch','LAX_3Ch','CINESAX'};
   for h = SS(:).'
-    condn = find( ~cellfun( @isempty, cellfun(@(x) regexpi(D.(sprintf('Serie_N%03d',h)).zSeriesDescription,x), plane, 'UniformOutput', false ) ) );
+    serieNode = D.(sprintf('Serie_N%03d',h));
+    condn = find( ~cellfun( @isempty, cellfun(@(x) regexpi(serieNode.zSeriesDescription,x), plane, 'UniformOutput', false ) ) );
     if ~isempty(condn)
         switch condn
-            case 1, PlaneName = 'HLA';  Comment = '';
-            case 2, PlaneName = 'VLA';  Comment = '';
-            case 3, PlaneName = 'LVOT'; Comment = '';
-            case 4, PlaneName = 'SAX';  Comment = sprintf( ' at z=%.1f' , D.(sprintf('Serie_N%03d',h)).Orientation_01.Position_001.IMAGE_001.info.xZLevel );
+            case 1, PlaneName = 'HLA';
+            case 2, PlaneName = 'VLA';
+            case 3, PlaneName = 'LVOT';
+            case 4, PlaneName = 'SAX';
         end
-        fprintf(fid,'"%s"%s%02d             1            %%%s\n',PlaneName,blanks(13-numel(PlaneName)),h,Comment);
+        
+        % Itera su Orientation e Position per specificare esattamente le singole slice (h.o.p)
+        orients = fieldnames(serieNode);
+        orients(~strncmp(orients, 'Orientation_', 12)) = [];
+        for oi = 1:numel(orients)
+            o = sscanf(orients{oi}, 'Orientation_%d');
+            orientNode = serieNode.(orients{oi});
+            
+            posns = fieldnames(orientNode);
+            posns(~strncmp(posns, 'Position_', 9)) = [];
+            for pi = 1:numel(posns)
+                p = sscanf(posns{pi}, 'Position_%d');
+                posNode = orientNode.(posns{pi});
+                
+                Comment = '';
+                try
+                    imgs = fieldnames(posNode);
+                    imgs(~strncmp(imgs, 'IMAGE_', 6)) = [];
+                    Comment = sprintf(' at z=%.1f', posNode.(imgs{1}).info.xZLevel);
+                end
+                
+                % Scrive il riferimento esatto alla slice: Serie.Orientation.Position
+                fprintf(fid,'"%s"%s%d.%d.%d             1            %%%s\n',PlaneName,blanks(13-numel(PlaneName)),h,o,p,Comment);
+            end
+        end
     end
   end
   fclose(fid);
@@ -153,7 +178,12 @@ for h = 1:size(LIST{1},1)
     I.INFO.PlaneName = PlaneName;
     
     if ~isempty( renameSN )
-      I.INFO.SeriesNumber = renameSN;
+      if ischar(renameSN)
+          % Estrae solo la prima parte intera della stringa per non rompere futuri sprintf('%03d')
+          I.INFO.SeriesNumber = str2double(regexp(renameSN, '^\d+', 'match', 'once'));
+      else
+          I.INFO.SeriesNumber = renameSN;
+      end
     end
     
     HS{end+1,1} = I;
