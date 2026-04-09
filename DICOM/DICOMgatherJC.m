@@ -553,7 +553,16 @@ function D = DICOMgatherJC( files , varargin )
       D = subsasgn( D , w , value );
       return;
     end
-    if warm == 1 && ~isequal( prev_value , value )   %%TODO conflicts
+    
+    % FIX: tolleranza per i campi numerici (come zOrientation) per evitare conflitti dovuti a minime differenze decimali
+    is_same = isequal( prev_value , value );
+    if ~is_same && isnumeric(prev_value) && isnumeric(value) && isequal(size(prev_value), size(value))
+        if max(abs(double(prev_value(:)) - double(value(:)))) < 1e-4
+            is_same = true;
+        end
+    end
+    
+    if warm == 1 && ~is_same   %%TODO conflicts
       D = subsasgn( D , [ w(1:end-1) , substruct('.','CONFLICT') ] , ...
         struct('in',w(end).subs,'prev_value',prev_value,'new_value',value ) );
       vprintf('\n');
