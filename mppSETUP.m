@@ -20,36 +20,46 @@ try
   fprintf('mpp FOLDER is :   "%s"\n' , mpp_F_O_L_D_E_R_ );
 
   set(0,'DefaultFigureCreateFcn','factory');
-  fprintf('',cellfun(@(p)isempty(strfind(p,'Dropbox'))||find(rmpath(p),1),strsplit(path,';','CollapseDelimiters',true)));
-  fprintf('',cellfun(@(p)isempty(strfind(p,mpp_F_O_L_D_E_R_))||find(rmpath(p),1),strsplit(path,';','CollapseDelimiters',true)));
+  %fprintf('',cellfun(@(p)isempty(strfind(p,'Dropbox'))||find(rmpath(p),1),strsplit(path,';','CollapseDelimiters',true)));
+  %fprintf('',cellfun(@(p)isempty(strfind(p,mpp_F_O_L_D_E_R_))||find(rmpath(p),1),strsplit(path,';','CollapseDelimiters',true)));
+  p = strsplit(path, pathsep);
+  for k = 1:numel(p)
+    try
+        if contains(p{k}, 'Dropbox') || contains(p{k}, mpp_F_O_L_D_E_R_)
+        rmpath(p{k}); 
+        end
+    catch
+    end
+  end
+
   addpath(                      mpp_F_O_L_D_E_R_ );
-  addpath( fullfile(            mpp_F_O_L_D_E_R_ ,   'MPP_tools\' ) );
-  addpath( fullfile( fileparts( mpp_F_O_L_D_E_R_ ) , 'thirdParty\' ) );
-  addpath( fullfile( fileparts( mpp_F_O_L_D_E_R_ ) , 'thirdParty\export_fig' ) );
-  addpath( fullfile( fileparts( mpp_F_O_L_D_E_R_ ) , 'thirdParty\Factorize' ) );
-  addpath( fullfile( fileparts( mpp_F_O_L_D_E_R_ ) , 'IO\' ) );
-  addpath( fullfile( fileparts( mpp_F_O_L_D_E_R_ ) , 'LieAlgebra\' ) );
-  addpath( fullfile( fileparts( mpp_F_O_L_D_E_R_ ) , 'MESH\' ) );
-  addpath( fullfile( fileparts( mpp_F_O_L_D_E_R_ ) , 'MESHES\' ) ); try,enableVTK;end
-  addpath( fullfile( fileparts( mpp_F_O_L_D_E_R_ ) , 'MESHES\jigsaw\' ) );
-  addpath( fullfile( fileparts( mpp_F_O_L_D_E_R_ ) , 'MESHES\tetgen\' ) );
-  addpath( fullfile( fileparts( mpp_F_O_L_D_E_R_ ) , 'MESHES\carve\' ) );
-  addpath( fullfile( fileparts( mpp_F_O_L_D_E_R_ ) , 'MESHES\gmsh\' ) );
-  addpath( fullfile( fileparts( mpp_F_O_L_D_E_R_ ) , 'Tools\' ) );
-  addpath( fullfile( fileparts( mpp_F_O_L_D_E_R_ ) , 'Tools\parseargs' ) );
-  addpath( fullfile( fileparts( mpp_F_O_L_D_E_R_ ) , 'uiTools\' ) );
-  addpath( fullfile( fileparts( mpp_F_O_L_D_E_R_ ) , 'DICOM\' ) );
-  addpath( fullfile( fileparts( mpp_F_O_L_D_E_R_ ) , 'Image3D\' ) );
-  addpath( fullfile( fileparts( mpp_F_O_L_D_E_R_ ) , 'polygons\' ) );
-  addpath( fullfile( fileparts( mpp_F_O_L_D_E_R_ ) , 'POLYLINE\' ) );
-  addpath( fullfile( fileparts( mpp_F_O_L_D_E_R_ ) , 'CardiacAnalysisTools\' ) );
-  addpath( fullfile( fileparts( mpp_F_O_L_D_E_R_ ) , 'OPTIM\' ) );
-  addpath( fullfile( fileparts( mpp_F_O_L_D_E_R_ ) , 'MatrixCalculus\' ) );
-  addpath( fullfile( fileparts( mpp_F_O_L_D_E_R_ ) , 'uiTools\OrbitPanZoom\' ) );
-  addpath( fullfile( fileparts( mpp_F_O_L_D_E_R_ ) , 'euclidean_distance_A2B\' ) );
-  addpath( fullfile( fileparts( mpp_F_O_L_D_E_R_ ) , 'drawContours\' ) );
-  addpath( fullfile( fileparts( mpp_F_O_L_D_E_R_ ) , 'MESHES\gmsh\' ) );
-  addpath( fullfile( fileparts( mpp_F_O_L_D_E_R_ ) , 'SSM\' ) );
+  addpath( fullfile(            mpp_F_O_L_D_E_R_ ,   'MPP_tools/' ) );
+  addpath( fullfile( fileparts( mpp_F_O_L_D_E_R_ ) , 'thirdParty/' ) );
+  addpath( fullfile( fileparts( mpp_F_O_L_D_E_R_ ) , 'thirdParty/export_fig' ) );
+  addpath( fullfile( fileparts( mpp_F_O_L_D_E_R_ ) , 'thirdParty/Factorize' ) );
+  addpath( fullfile( fileparts( mpp_F_O_L_D_E_R_ ) , 'IO/' ) );
+  addpath( fullfile( fileparts( mpp_F_O_L_D_E_R_ ) , 'LieAlgebra/' ) );
+  addpath( fullfile( fileparts( mpp_F_O_L_D_E_R_ ) , 'MESH/' ) );
+  addpath( fullfile( fileparts( mpp_F_O_L_D_E_R_ ) , 'MESHES/' ) ); try,enableVTK;end
+  addpath( fullfile( fileparts( mpp_F_O_L_D_E_R_ ) , 'MESHES/jigsaw/' ) );
+  addpath( fullfile( fileparts( mpp_F_O_L_D_E_R_ ) , 'MESHES/tetgen/' ) );
+  addpath( fullfile( fileparts( mpp_F_O_L_D_E_R_ ) , 'MESHES/carve/' ) );
+  addpath( fullfile( fileparts( mpp_F_O_L_D_E_R_ ) , 'MESHES/gmsh/' ) );
+  addpath( fullfile( fileparts( mpp_F_O_L_D_E_R_ ) , 'Tools/' ) );
+  addpath( fullfile( fileparts( mpp_F_O_L_D_E_R_ ) , 'Tools/parseargs' ) );
+  addpath( fullfile( fileparts( mpp_F_O_L_D_E_R_ ) , 'uiTools/' ) );
+  addpath( fullfile( fileparts( mpp_F_O_L_D_E_R_ ) , 'DICOM/' ) );
+  addpath( fullfile( fileparts( mpp_F_O_L_D_E_R_ ) , 'Image3D/' ) );
+  addpath( fullfile( fileparts( mpp_F_O_L_D_E_R_ ) , 'polygons/' ) );
+  addpath( fullfile( fileparts( mpp_F_O_L_D_E_R_ ) , 'POLYLINE/' ) );
+  addpath( fullfile( fileparts( mpp_F_O_L_D_E_R_ ) , 'CardiacAnalysisTools/' ) );
+  addpath( fullfile( fileparts( mpp_F_O_L_D_E_R_ ) , 'OPTIM/' ) );
+  addpath( fullfile( fileparts( mpp_F_O_L_D_E_R_ ) , 'MatrixCalculus/' ) );
+  addpath( fullfile( fileparts( mpp_F_O_L_D_E_R_ ) , 'uiTools/OrbitPanZoom/' ) );
+  addpath( fullfile( fileparts( mpp_F_O_L_D_E_R_ ) , 'euclidean_distance_A2B/' ) );
+  addpath( fullfile( fileparts( mpp_F_O_L_D_E_R_ ) , 'drawContours/' ) );
+  addpath( fullfile( fileparts( mpp_F_O_L_D_E_R_ ) , 'MESHES/gmsh/' ) );
+  addpath( fullfile( fileparts( mpp_F_O_L_D_E_R_ ) , 'SSM/' ) );
   clearvars('mpp_F_O_L_D_E_R_');
   
   
@@ -175,6 +185,8 @@ end
 catch LE
   clearvars('is_M_P_P_dir_');
   clearvars('mpp_F_O_L_D_E_R_');
-  error('error SETTING UP MPP (Mesh Personalization Pipeline).');
+  %error('error SETTING UP MPP (Mesh Personalization Pipeline).');
+  rethrow(LE);
+  
 end
 

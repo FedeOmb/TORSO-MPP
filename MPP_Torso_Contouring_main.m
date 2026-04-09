@@ -1,8 +1,8 @@
 
 clear all;
-run( 'C:\Users\hanith\OneDrive - Nexus365\TorsoReconstruction\Torso_Contouring_Hannah\MPP\mppSETUP.m' );
-directf = 'C:\Users\hanith\OneDrive - Nexus365\TorsoReconstruction\Torso_Contouring_Hannah';
-%addpath( [directf, 'MPP'] ); run( [directf, 'MPP\mppSETUP.m'] );
+run( '/home/federico/TORSO-MPP/MPP/mppSETUP.m' );
+directf = '/home/federico/TORSO-MPP';
+%addpath( [directf, 'MPP'] ); run( [directf, 'MPP/mppSETUP.m'] );
 
 %% some preferences
 mppOption TORSO_MODEL_DIR  = fullfile(fileparts(which('mpp_Read_DICOMs')),'TORSO');
@@ -27,7 +27,7 @@ mppOption VERSION          = ['Torso-reconstruction:1.0'];
 mppOption MAKE_VIDEO       = false;
 mppOption DIR              = directf;
 mppOption Torso_figures    = false;
-mppOption pathfull = ['C:\Users\hanith\OneDrive - Nexus365\TorsoReconstruction\Torso_Contouring_Hannah\MPP\'];
+mppOption pathfull = ['/home/federico/TORSO-MPP/MPP/'];
 
 %% LIST of SUBJECTS
 cd(directf); files = dir(fullfile(directf, 'data'));
