@@ -23,8 +23,8 @@ end
 
 %
 mppOption pathfull
-setenv('PATH', ['C:\python-venv\torso-2D-seg\Scripts', pathsep, getenv('PATH')]);
-system(['"C:\python-venv\torso-2D-seg\Scripts\python" "', pathfull, 'PreTrained\torso_contouring.py"', ' --dir_img ', Fullfile('mpp', 'torso-images'),...
+setenv('PATH', ['/home/federico/TORSO-MPP/.venvmpp/bin', pathsep, getenv('PATH')]);
+system(['"/home/federico/TORSO-MPP/.venvmpp/bin/python" "', pathfull, 'PreTrained\torso_contouring.py"', ' --dir_img ', Fullfile('mpp', 'torso-images'),...
   ' --model_path ', fullfile(pathfull, 'PreTrained', 'torso_cnt_N65_35_cycle_2.pt')]);
 
 %%
