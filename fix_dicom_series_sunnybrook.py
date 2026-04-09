@@ -40,21 +40,21 @@ def verify_series_by_orientation(dataset_dir):
                 print(f"{os.path.basename(root)} -> {tipo}")
                 break
 
-def fix_series_description(dataset_dir):
-    for root, dirs, files in os.walk(dataset_dir):
+def fix_series_description(series_dir, type):
+    for root, dirs, files in os.walk(series_dir):
         for file in files:
             if file.endswith(".dcm"):
                 path = os.path.join(root, file)
                 ds = pydicom.dcmread(path)
                 # modifica solo le serie CINELAX
                 if "CINELAX" in ds.get("SeriesDescription", "").upper():
-                    type = get_plane_type(ds)
                     if type in ["LAX_4Ch", "LAX_2Ch"]:
                         print(f"Modifica {path}: {ds.SeriesDescription} -> {type}")
                         ds.SeriesDescription = type
-                        ds.save_as(path) # Salviamo il file sovrascrivendolo
+                        ds.save_as(path)
 
 if __name__ == "__main__":
     root_dir = os.path.join("..", "data", "sb301","DICOMS")
     verify_series_by_orientation(root_dir)
-    fix_series_description(root_dir)
+    series_dir = os.path.join(root_dir, "CINELAX_8")
+    fix_series_description(series_dir, "LAX_4Ch")
