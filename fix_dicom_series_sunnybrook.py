@@ -2,9 +2,7 @@ import pydicom
 import numpy as np
 import os
 
-def get_plane_type(dicom_path):
-    ds = pydicom.dcmread(dicom_path, stop_before_pixels=True)
-    
+def get_plane_type(ds):    
     desc = ds.get("SeriesDescription", "").lower()
     if "4ch" in desc or "hla" in desc: return "4CH"
     if "2ch" in desc or "vla" in desc: return "2CH"
@@ -26,17 +24,37 @@ def get_plane_type(dicom_path):
         # Le viste 4CH sono più "orizzontali" (tipo assiali), quindi hanno Z alto (>0.5).
         # Le viste 2CH sono "verticali", quindi hanno Z basso (<0.5).
         if abs_z > 0.5:
-            return "Probabile 4CH (HLA)"
+            return "LAX_4Ch"
         else:
-            return "Probabile 2CH (VLA)"
+            return "LAX_2Ch"
             
     return "Sconosciuto"
 
-root_dir = os.path.join("..", "data", "sb301","DICOMS")
-for root, dirs, files in os.walk(root_dir):
-    for file in files:
-        if file.endswith(".dcm"):
-            path = os.path.join(root, file)
-            tipo = get_plane_type(path)
-            print(f"{os.path.basename(root)} -> {tipo}")
-            break # Basta controllare un file per serie
+def verify_series_by_orientation(dataset_dir):
+    for root, dirs, files in os.walk(dataset_dir):
+        for file in files:
+            if file.endswith(".dcm"):
+                path = os.path.join(root, file)
+                ds = pydicom.dcmread(path, stop_before_pixels=True)
+                tipo = get_plane_type(ds)
+                print(f"{os.path.basename(root)} -> {tipo}")
+                break
+
+def fix_series_description(dataset_dir):
+    for root, dirs, files in os.walk(dataset_dir):
+        for file in files:
+            if file.endswith(".dcm"):
+                path = os.path.join(root, file)
+                ds = pydicom.dcmread(path)
+                # modifica solo le serie CINELAX
+                if "CINELAX" in ds.get("SeriesDescription", "").upper():
+                    type = get_plane_type(ds)
+                    if type in ["LAX_4Ch", "LAX_2Ch"]:
+                        print(f"Modifica {path}: {ds.SeriesDescription} -> {type}")
+                        ds.SeriesDescription = type
+                        ds.save_as(path) # Salviamo il file sovrascrivendolo
+
+if __name__ == "__main__":
+    root_dir = os.path.join("..", "data", "sb301","DICOMS")
+    verify_series_by_orientation(root_dir)
+    fix_series_description(root_dir)
