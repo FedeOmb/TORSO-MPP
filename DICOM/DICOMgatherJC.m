@@ -511,6 +511,11 @@ function D = DICOMgatherJC( files , varargin )
   if ~isfield( item , 'zSERIEkey')
     item.zSERIEkey = [];
     try, item.zSERIEkey = item.SeriesInstanceUID; end
+    
+    % FIX per Sunnybrook: Forza l'unicità della serie in caso di SeriesInstanceUID corrotti o condivisi
+    try, item.zSERIEkey = [item.zSERIEkey, '_SN', num2str(item.SeriesNumber)]; end
+    try, item.zSERIEkey = [item.zSERIEkey, '_', item.SeriesDescription]; end
+    
     if isempty( item.zSERIEkey ), item.zSERIEkey = 'UNKNOW_SERIE'; end
   end
   if ~isfield( item , 'zORIENTATIONkey')
