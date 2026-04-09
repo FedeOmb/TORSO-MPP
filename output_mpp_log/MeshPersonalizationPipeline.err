@@ -1,0 +1,19 @@
+ERROR EXECUTING: Select Heart Slices Sunnybrook     for '/home/federico/TORSO-MPP/data/sb301'
+at:   09/04/26 (15:37:52.414)
+in: federico@cdt-vm:216511 (GLNXA64)
+
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Undefined function 'ndmat_mx' for input arguments of type 'double'.
+Error in I3D/I3D_subsref (line 256)
+          transform( ndmat_mx( I.X([1 end]) , I.Y([1 end]) , I.Z([1 end]) ) , I.SpatialTransform ) - ...
+Error in indexing (line 3)
+  [varargout{1:nargout}] = I3D_subsref( I , s );
+Error in MontageHeartSlices (line 178)
+      HS{r,1} = B.centerGrid;
+Error in mpp_Select_Heart_Slices_Sunnybrook (line 251)
+MontageHeartSlices( HS ); Figure(gcf);
+Error in MPP_Torso_Contouring_main (line 44)
+  mpp_Select_Heart_Slices_Sunnybrook               %output: HS.mat    (referring Heart Slices)  making use of "HeartSlices.list"
+vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
+
+

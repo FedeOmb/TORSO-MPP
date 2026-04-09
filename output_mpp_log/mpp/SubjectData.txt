@@ -1,0 +1,85 @@
+AccessionNumber:                         ''
+AcquisitionDate:                         '20120000'
+AcquisitionNumber:                       1
+AngioFlag:                               'N'
+BitDepth:                                uint16(16)
+BitsAllocated:                           uint16(16)
+BitsStored:                              uint16(16)
+ColorType:                               'grayscale'
+Columns:                                 uint16(256)
+ContentDate:                             '20120000'
+DeviceSerialNumber:                      '48OwLe2NUfWk'
+EchoNumbers:                             1
+EchoTrainLength:                         1
+FileMetaInformationVersion:              uint8([0;1])
+Format:                                  'DICOM'
+FormatVersion:                           3
+Height:                                  uint16(256)
+HighBit:                                 uint16(15)
+ImageType:                               'ORIGINAL\PRIMARY\OTHER'
+ImagedNucleus:                           '1H'
+ImplementationClassUID:                  '2.16.124.113543.6006.99.8188283439478048534'
+ImplementationVersionName:               'OSIRIX'
+InversionTime:                           0
+Laterality:                              ''
+MRAcquisitionType:                       '2D'
+MagneticFieldStrength:                   1.5
+Manufacturer:                            'GE MEDICAL SYSTEMS'
+ManufacturerModelName:                   'SIGNA HDx'
+MediaStorageSOPClassUID:                 '1.2.840.10008.5.1.4.1.1.4'
+Modality:                                'MR'
+NumberOfAverages:                        1
+PatientBirthDate:                        '00000000'
+PatientID:                               'SCD0000301'
+PatientName:                             struct('FamilyName','SCD0000301')
+PatientPosition:                         'HFS'
+PatientSex:                              ''
+PerFrameFunctionalGroupsSequence:        struct('Item_1',[])
+PercentSampling:                         100
+PhotometricInterpretation:               'MONOCHROME2'
+PixelBandwidth:                          976.562
+PixelRepresentation:                     uint16(1)
+PositionReferenceIndicator:              ''
+ReceiveCoilName:                         '8CARDIAC'
+ReferencedPatientSequence:               struct('Item_1',struct('ReferencedSOPClassUID','1.2.840.10008.3.1.2.1.1','ReferencedSOPInstanceUID','2.16.124.113543.6006.99.7285946453226469426'))
+ReferencedPerformedProcedureStepSequence: struct('Item_1',struct('ReferencedSOPClassUID','1.2.840.10008.3.1.2.3.3','ReferencedSOPInstanceUID','2.16.124.113543.6006.99.7301083864069674581'))
+ReferencedStudySequence:                 struct('Item_1',struct('ReferencedSOPClassUID','1.2.840.10008.3.1.2.3.1','ReferencedSOPInstanceUID','2.16.124.113543.6006.99.7283654773471951120'))
+Rows:                                    uint16(256)
+SOPClassUID:                             '1.2.840.10008.5.1.4.1.1.4'
+SamplesPerPixel:                         uint16(1)
+ScanningSequence:                        'GR'
+SequenceVariant:                         'SS'
+SeriesDate:                              '20120000'
+SeriesInstanceUID:                       '2.16.124.113543.6006.99.7284556102389855923'
+SliceThickness:                          8
+SmallestImagePixelValue:                 uint16(0)
+SoftwareVersions:                        '14\LX\MR Software release:14.0_M4_0629.a'
+SourceApplicationEntityTitle:            ''
+SpecificCharacterSet:                    'ISO_IR 100'
+StudyDate:                               '20120000'
+StudyDescription:                        'SC-HF-I-4'
+StudyID:                                 ''
+StudyInstanceUID:                        '2.16.124.113543.6006.99.7287180431222654512'
+StudyPriorityID:                         'LOW'
+StudyStatusID:                           'COMPLETED'
+StudyTime:                               '081327.000000'
+TransferSyntaxUID:                       '1.2.840.10008.1.2.1'
+VariableFlipAngleFlag:                   'N'
+Width:                                   uint16(256)
+xPatientName:                            'SCD0000301'
+xSize:                                   uint16([256,256,1,1])
+
+
+zFamilyName:                             'SCD0000301'
+zPatientID:                              'SCD0000301'
+zPatientSex:                             ''
+zzKEY:                                   'SCD0000301'
+
+
+zStudyDate:                              'Dec.31,2011'
+zStudyDescription:                       'SC-HF-I-4'
+zStudyInstanceUID:                       '2.16.124.113543.6006.99.7287180431222654512'
+zStudyTime:                              '08:13:27.000'
+zzKEY:                                   '2.16.124.113543.6006.99.7287180431222654512'
+
+
