@@ -46,7 +46,19 @@ try
       clear HS_ A B;
     end; end
   
-  if isempty( centerH ), error('toCatch'); end
+  if isempty( centerH )
+      % FALLBACK per Sunnybrook: se non troviamo le slice del cuore, 
+      % stimiamo il centro del cuore approssimativamente dal centroide dei contorni del torso
+      try
+          BC_fallback = Loadv( 'BC0' , 'BC0' );
+          all_pts = cell2mat(BC_fallback(:,2));
+          centerH = mean(all_pts, 1);
+          fprintf('Attenzione: centerH stimato dai contorni del torso a causa di metadati cardiaci mancanti.\n');
+      catch
+          error('toCatch');
+      end
+  end
+  
   % The translation for placing the body model in "subject's coordinates"
   R = maketransform( 't' , -centerH0 , 't' , centerH  );
   

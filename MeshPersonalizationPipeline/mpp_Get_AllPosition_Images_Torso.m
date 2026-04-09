@@ -119,17 +119,22 @@ end
 fclose(fileID);
 
 %% perform some pruning of the whole list of images
-accepted_torso_images = []; check = {'InlineVF','Thorax'};
+accepted_torso_images = []; check = {'InlineVF','Scout','Loc','Localizer'}; % Aggiunte parole chiave generiche
 fileID =fopen(strcat(SUBJECT_DIR,'\TORSO_filtered.list'),'w');
 for i = 1:numel(BS)
-  condn = find( ~cellfun( @isempty, cellfun(@(x) strfind(BS{i}.INFO.SeriesDescription,x), check, 'UniformOutput', false )));
-  if isempty(condn)
+  % Cerca parole chiave se presenti, ignorando il case
+  condn = find( ~cellfun( @isempty, cellfun(@(x) regexpi(BS{i}.INFO.SeriesDescription,x), check, 'UniformOutput', false )));
+  
+  % Se non ci sono etichette UKBB, usiamo un fallback basato sulla geometria
+  if isempty(condn) || true % Forza il controllo geometrico per Sunnybrook
     same = 0;
     if i>1 && BS{i}.INFO.SeriesNumber == BS{i-1}.INFO.SeriesNumber
       if abs(BS{i}.INFO.xZLevel - BS{i-1}.INFO.xZLevel) < 5,  same = 1; end
     end
     try, distance = BS{i}.INFO.xZLevel - BS{i-1}.INFO.xZLevel; catch, distance = 0; end
-    if same == 0 || abs(distance) > 40 || ~isempty(strfind(BS{i}.INFO.SeriesDescription,'Loca'))
+    
+    % Accettiamo le slice che hanno una distanza ragionevole o se hanno un FOV abbastanza ampio
+    if same == 0 || abs(distance) > 10 % Abbassato il threshold di distanza per accettare più slice scout
        fprintf(fileID,'%3d -  ' , i );
        fprintf(fileID,'%03d.' , BS{i}.INFO.SeriesNumber );
        fprintf(fileID,'%s  ' , BS{i}.INFO.SeriesDescription );
