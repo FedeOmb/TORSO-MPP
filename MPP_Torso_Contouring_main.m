@@ -41,7 +41,7 @@ for ff = 1:numel( SUBJECT_DIRs )
   
   mpp_Read_DICOMs                               %output: DICOMs.mat
   mpp_Subject_Data                              %output: SubjectData.txt
-  mpp_Select_Heart_Slices_Biobank               %output: HS.mat    (referring Heart Slices)  making use of "HeartSlices.list"
+  mpp_Select_Heart_Slices_Sunnybrook               %output: HS.mat    (referring Heart Slices)  making use of "HeartSlices.list"
   mpp_Get_AllPosition_Images_Torso              %output: BS.mat
   
   mpp_Segmented_Contours_Torso                  %output: BC0.mat
