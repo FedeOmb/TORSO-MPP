@@ -17,3 +17,38 @@ Error in MPP_Torso_Contouring_main (line 44)
 vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
 
 
+ERROR EXECUTING: Segmented Contours Torso     for '/home/federico/TORSO-MPP/data/sb301'
+at:   09/04/26 (16:03:13.519)
+in: federico@cdt-vm:216511 (GLNXA64)
+
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Error using get_full_filename')" style="font-weight:bold">imread>get_full_filename
+File "/home/federico/TORSO-MPP/data/sb301/mpp/torso-segment/001.[005-CINESAX](-140.6).png" does not exist.
+Error in imread (line 372)
+        fullname = get_full_filename(filename);
+Error in mpp_Segmented_Contours_Torso (line 34)
+    seg = imread( fn ); seg = permute(seg,[2 1]);
+Error in MPP_Torso_Contouring_main (line 47)
+  mpp_Segmented_Contours_Torso                  %output: BC0.mat
+vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
+
+
+ERROR EXECUTING: Segmented Contours Torso     for '/home/federico/TORSO-MPP/data/sb301'
+at:   09/04/26 (16:13:30.283)
+in: federico@cdt-vm:216511 (GLNXA64)
+
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Undefined function 'val2ind' for input arguments of type 'double'.
+Error in I3D/inpoly (line 24)
+      ijk = [ val2ind( I.X , c(:,1) , 'sorted' ) , val2ind( I.Y , c(:,2) , 'sorted' ) , val2ind( I.Z , c(:,3) , 'sorted' ) ];
+Error in I3D/I3D_subsref (line 1467)
+         o = feval( s(1).subs , I , s(2).subs{:} , optional_args{:} );
+Error in indexing (line 3)
+  [varargout{1:nargout}] = I3D_subsref( I , s );
+Error in mpp_Segmented_Contours_Torso (line 50)
+          dummy{jj}(end+1,:) = [NaN, NaN, NaN]; mask = ~~S.inpoly(dummy{jj}); test(jj) = sum(mask(:)); clear mask;
+Error in MPP_Torso_Contouring_main (line 47)
+  mpp_Segmented_Contours_Torso                  %output: BC0.mat
+vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
+
+
