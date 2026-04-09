@@ -16,7 +16,7 @@ end
 %%
 mppOption pathfull
 setenv('PATH', ['/home/federico/TORSO-MPP/.venvmpp/bin', pathsep, getenv('PATH')]);
-system(['"/home/federico/TORSO-MPP/.venvmpp/bin/python" "', pathfull, 'PreTrained\torso_segmentor.py"', ' --dir_img ', Fullfile('mpp', 'torso-images'),...
+system(['"/home/federico/TORSO-MPP/.venvmpp/bin/python" "', pathfull, 'PreTrained/torso_segmentor.py"', ' --dir_img ', Fullfile('mpp', 'torso-images'),...
   ' --model_path ', fullfile(pathfull, 'PreTrained', 'N15_cycle_4.pt')]);
 
 %%
