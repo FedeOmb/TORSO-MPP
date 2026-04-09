@@ -136,8 +136,8 @@ function o = I3D_subsref( I , s )
       o.Z = o.Z*d(3);
       
       bb_err = maxnorm( ...
-          transform( ndmat( I.X([1 end]) , I.Y([1 end]) , I.Z([1 end]) ) , I.SpatialTransform ) - ...
-          transform( ndmat( o.X([1 end]) , o.Y([1 end]) , o.Z([1 end]) ) , o.SpatialTransform ) );
+          transform( ndmat_mx( I.X([1 end]) , I.Y([1 end]) , I.Z([1 end]) ) , I.SpatialTransform ) - ...
+          transform( ndmat_mx( o.X([1 end]) , o.Y([1 end]) , o.Z([1 end]) ) , o.SpatialTransform ) );
       if bb_err > 2e-5
         error('mal transformada!!!   (%g)', bb_err );
       end
@@ -184,8 +184,8 @@ function o = I3D_subsref( I , s )
       o.Z = o.Z / h(3);
       
       if maxnorm( ...
-          transform( ndmat( I.X([1 end]) , I.Y([1 end]) , I.Z([1 end]) ) , I.SpatialTransform ) - ...
-          transform( ndmat( o.X([1 end]) , o.Y([1 end]) , o.Z([1 end]) ) , o.SpatialTransform ) ) > 1e-6
+          transform( ndmat_mx( I.X([1 end]) , I.Y([1 end]) , I.Z([1 end]) ) , I.SpatialTransform ) - ...
+          transform( ndmat_mx( o.X([1 end]) , o.Y([1 end]) , o.Z([1 end]) ) , o.SpatialTransform ) ) > 1e-6
         error('mal transformada!!!');
       end
     
@@ -216,8 +216,8 @@ function o = I3D_subsref( I , s )
 
       
       if maxnorm( ...
-          transform( ndmat( I.X([1 end]) , I.Y([1 end]) , I.Z([1 end]) ) , I.SpatialTransform ) - ...
-          transform( ndmat( o.X([1 end]) , o.Y([1 end]) , o.Z([1 end]) ) , o.SpatialTransform ) ) > 1e-9
+          transform( ndmat_mx( I.X([1 end]) , I.Y([1 end]) , I.Z([1 end]) ) , I.SpatialTransform ) - ...
+          transform( ndmat_mx( o.X([1 end]) , o.Y([1 end]) , o.Z([1 end]) ) , o.SpatialTransform ) ) > 1e-9
         error('mal transformada!!!');
       end
     
@@ -253,8 +253,8 @@ function o = I3D_subsref( I , s )
 
       
       if maxnorm( ...
-          transform( ndmat( I.X([1 end]) , I.Y([1 end]) , I.Z([1 end]) ) , I.SpatialTransform ) - ...
-          transform( ndmat( o.X([1 end]) , o.Y([1 end]) , o.Z([1 end]) ) , o.SpatialTransform ) ) > 1e-6
+          transform( ndmat_mx( I.X([1 end]) , I.Y([1 end]) , I.Z([1 end]) ) , I.SpatialTransform ) - ...
+          transform( ndmat_mx( o.X([1 end]) , o.Y([1 end]) , o.Z([1 end]) ) , o.SpatialTransform ) ) > 1e-6
         error('mal transformada!!!');
       end
     
@@ -547,22 +547,22 @@ function o = I3D_subsref( I , s )
     %%GRIDs
     %%coordenadas transformadas
     case {'.XYZ'}
-      o = ndmat( I.X , I.Y , I.Z );
+      o = ndmat_mx( I.X , I.Y , I.Z );
       o = transform( o , I.SpatialTransform , 'rows');
     case {'.XYZh'}
-      o = ndmat( I.X , I.Y , I.Z );
+      o = ndmat_mx( I.X , I.Y , I.Z );
       o = transform( o , I.SpatialTransform , 'rows');
       o(:,4) = 1;
     case {'.XYZ(3)'}
-      o= ndmat( I.X(s(2).subs{1}) , I.Y(s(2).subs{2}) , I.Z(s(2).subs{3}) );
+      o= ndmat_mx( I.X(s(2).subs{1}) , I.Y(s(2).subs{2}) , I.Z(s(2).subs{3}) );
       o = transform( o , I.SpatialTransform , 'rows');
     case {'.XYZh(3)'}
-      o = ndmat( I.X(s(2).subs{1}) , I.Y(s(2).subs{2}) , I.Z(s(2).subs{3}) );
+      o = ndmat_mx( I.X(s(2).subs{1}) , I.Y(s(2).subs{2}) , I.Z(s(2).subs{3}) );
       o = transform( o , I.SpatialTransform , 'rows');
       o(:,4) = 1;
     case '.XYZ(1)'                           % I.XYZ( [i1 j1 z1 ; i2 j2 k2 ] )
       if     islogical( s(2).subs{1} )  ||  size(s(2).subs{1},2) == 1
-        o = ndmat( I.X , I.Y , I.Z );
+        o = ndmat_mx( I.X , I.Y , I.Z );
         o = o( s(2).subs{1} , : );
         o = transform( o , I.SpatialTransform , 'rows');
       elseif size(s(2).subs{1},2) == 3
@@ -573,7 +573,7 @@ function o = I3D_subsref( I , s )
       end
     case '.XYZh(1)'
       if     islogical( s(2).subs{1} )  ||  size(s(2).subs{1},2) == 1
-        o = ndmat( I.X , I.Y , I.Z );
+        o = ndmat_mx( I.X , I.Y , I.Z );
         o = o( s(2).subs{1} , : );
         o = transform( o , I.SpatialTransform , 'rows');
       elseif size(s(2).subs{1},2) == 3
@@ -609,14 +609,14 @@ function o = I3D_subsref( I , s )
 
     %%coordenadas sin transformar
     case {'.GRID' '.CXYZ'}
-      o = ndmat( I.X , I.Y , I.Z );
+      o = ndmat_mx( I.X , I.Y , I.Z );
       
     case {'.GRIDh' '.CXYZh'}
-      o = ndmat( I.X , I.Y , I.Z );
+      o = ndmat_mx( I.X , I.Y , I.Z );
       o(:,4) = 1;
       
     case {'.GRID(3)' '.CXYZ(3)'}               % I.GRID(1:3,1:4,1:5)  
-      o = ndmat( I.X(s(2).subs{1}) , I.Y(s(2).subs{2}) , I.Z(s(2).subs{3}) );
+      o = ndmat_mx( I.X(s(2).subs{1}) , I.Y(s(2).subs{2}) , I.Z(s(2).subs{3}) );
 
     case {'.GRIDh(3)' '.CXYZh(3)'}
       o = ndma_mx( I.X(s(2).subs{1}) , I.Y(s(2).subs{2}) , I.Z(s(2).subs{3}) );
@@ -624,7 +624,7 @@ function o = I3D_subsref( I , s )
       
     case {'.GRID(1)' '.CXYZ(1)'}               % I.GRID( [i1 j1 z1 ; i2 j2 k2 ] )   
       if     islogical( s(2).subs{1} )  ||  size(s(2).subs{1},2) == 1
-        o = ndmat( I.X , I.Y , I.Z );
+        o = ndmat_mx( I.X , I.Y , I.Z );
         o = o( s(2).subs{1} , : );
       elseif size(s(2).subs{1},2) == 3
         o = s(2).subs{1};
@@ -635,7 +635,7 @@ function o = I3D_subsref( I , s )
 
     case {'.GRIDh(1)' '.CXYZh(1)'}
       if     islogical( s(2).subs{1} )  ||  size(s(2).subs{1},2) == 1
-        o = ndmat( I.X , I.Y , I.Z );
+        o = ndmat_mx( I.X , I.Y , I.Z );
         o = o( s(2).subs{1} , : );
       elseif size(s(2).subs{1},2) == 3
         o = s(2).subs{1};
@@ -670,11 +670,11 @@ function o = I3D_subsref( I , s )
 
     %%coordenadas duales transformadas
     case '.DXYZ'
-      o = ndmat( dualVector(I.X) , dualVector(I.Y) , dualVector(I.Z) );
+      o = ndmat_mx( dualVector(I.X) , dualVector(I.Y) , dualVector(I.Z) );
       o = transform( o , I.SpatialTransform , 'rows');
     case '.DXYZ(3)'     
       x= dualVector(I.X); y= dualVector(I.Y); z=dualVector(I.Z);
-      o = ndmat( x(s(2).subs{1}) , y(s(2).subs{2}) , z(s(2).subs{3}) );
+      o = ndmat_mx( x(s(2).subs{1}) , y(s(2).subs{2}) , z(s(2).subs{3}) );
       o = transform( o , I.SpatialTransform , 'rows');
       
     case '.DXX',     o= subsref(I,substruct('.','DXYZ')); o= reshape(o(:,1),[numel(I.X) numel(I.Y) numel(I.Z)]+1);
@@ -702,11 +702,11 @@ function o = I3D_subsref( I , s )
       
     %%coordenadas duales sin transformar
     case {'.DGRID' '.DCXYZ'}
-      o = ndmat( dualVector(I.X) , dualVector(I.Y) , dualVector(I.Z) );
+      o = ndmat_mx( dualVector(I.X) , dualVector(I.Y) , dualVector(I.Z) );
 
     case {'.DGRID(3)' '.DCXYZ(3)'}
       x= dualVector(I.X); y= dualVector(I.Y); z=dualVector(I.Z);
-      o = ndmat( x(s(2).subs{1}) , y(s(2).subs{2}) , z(s(2).subs{3}) );
+      o = ndmat_mx( x(s(2).subs{1}) , y(s(2).subs{2}) , z(s(2).subs{3}) );
 
 
     case '.DCXX',     o= subsref(I,substruct('.','DGRID')); o= reshape(o(:,1),[numel(I.X) numel(I.Y) numel(I.Z)]+1);
@@ -741,7 +741,7 @@ function o = I3D_subsref( I , s )
       o = s(2).subs{1};
       o = [ val2ind( I.X , o(:,1) , 'sorted' ) , val2ind( I.Y , o(:,2) , 'sorted' ) , val2ind( I.Z , o(:,3) , 'sorted' ) ];
     case {'.ID'}
-      o = ndmat( I.X , I.Y , I.Z );
+      o = ndmat_mx( I.X , I.Y , I.Z );
       o = reshape( transform( o , I.SpatialTransform , 'rows') , [ numel(I.X) , numel(I.Y) , numel(I.Z) , 3] );
     case {'.IDENTITY2D'}
 
@@ -763,7 +763,7 @@ function o = I3D_subsref( I , s )
       o.MESHES = {};
       
       o = DATA_action( o , [ '@(X) ' ...
-            'reshape(transform(ndmat( ' uneval( I.X , I.Y ) '),' ...
+            'reshape(transform(ndmat_mx( ' uneval( I.X , I.Y ) '),' ...
             uneval( I.SpatialTransform ) ',''rows2d''),['                 ...
             uneval( numel(I.X) , numel(I.Y) , 1 , 1 , 2 ) '])' ] );
           
@@ -783,7 +783,7 @@ function o = I3D_subsref( I , s )
       o.MESHES = {};
       
       o = DATA_action( o , [ '@(X) ' ...
-            'reshape(transform(ndmat( ' uneval( I.X , I.Y , I.Z ) '),' ...
+            'reshape(transform(ndmat_mx( ' uneval( I.X , I.Y , I.Z ) '),' ...
             uneval( I.SpatialTransform ) ',''rows''),['                 ...
             uneval( numel(I.X) , numel(I.Y) , numel(I.Z) , 1 , 3 ) '])' ] );
           
@@ -796,7 +796,7 @@ function o = I3D_subsref( I , s )
       o = ndmat_nx( I.X(indx) , I.Y(indy) , I.Z(indz) );
       o = reshape( transform( o , I.SpatialTransform , 'rows') , [ numel(indx) , numel(indy) , numel(indz) , 3] );
     case '.IDgrid'
-      o = ndmat( I.X , I.Y , I.Z );
+      o = ndmat_mx( I.X , I.Y , I.Z );
       o = reshape( o , [ numel(I.X) , numel(I.Y) , numel(I.Z) , 3] );
     case '.IDgrid(3)'                           % I.GRID(1:3,1:4,1:5)  
       indx = s(2).subs{1};
