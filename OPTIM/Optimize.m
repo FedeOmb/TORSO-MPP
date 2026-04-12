@@ -452,7 +452,9 @@ function [x,HISTORY,X_PATH,ALL_EVALS] = Optimize( F , x , varargin )
     if isequal( LE.identifier , 'MATLAB:TooManyOutputs' )  ||  isequal( LE.identifier , 'MATLAB:maxlhs' )  || isequal( LE.identifier , 'deliver:TooManyOutputs' )  ||   isequal( LE.identifier , 'MATLAB:too_few_values_for_assignment' )
       F_RETURN_H = false;
     else
-      error('La primera evaluacion de F , dio error retornando [F,J,H]');
+      %error('La primera evaluacion de F , dio error retornando [F,J,H]');
+      disp(LE.message);
+      rethrow(LE);
     end
     try
       [E,J] = F( R(x) );
@@ -466,16 +468,20 @@ function [x,HISTORY,X_PATH,ALL_EVALS] = Optimize( F , x , varargin )
       if isequal( LE.identifier , 'MATLAB:TooManyOutputs' )   ||  isequal( LE.identifier , 'MATLAB:maxlhs' )  ||   isequal( LE.identifier , 'MATLAB:too_few_values_for_assignment' ) || isequal( LE.identifier , 'MATLAB:unassignedOutputs' ) 
         F_RETURN_J = false;
       else
-        disperror(LE)
-        error('La primera evaluacion de F , dio error retornando [F,J]');
+        %disperror(LE)
+        %error('La primera evaluacion de F , dio error retornando [F,J]');
+        disp(LE.message);
+        rethrow(LE);
       end
       try
         E = F( R(x) );
         NOF_F_evals = NOF_F_evals + 1;
         Vprintf(-4,'NOF: first evaluation(f): %d , %d , %d , %d , %d , %d , %d , %d , %d , %d',NOF_F_evals,NOF_J_evals,NOF_H_evals,NOF_Jn_evals,NOF_Hn_evals,NOF_F_smarts,NOF_F_no_compute,NOF_J_smarts,NOF_H_smarts,NOF_LS_smarts);
       catch
-        disperror(LE)
-        error('Error evaluating function at first callback!');
+        %disperror(LE)
+        %error('Error evaluating function at first callback!');
+        disp(LE.message);
+        rethrow(LE);
       end
     end
   end

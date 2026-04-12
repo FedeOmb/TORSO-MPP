@@ -37,7 +37,7 @@ function [q,T] = fitSSM( SSM_ , T_ , Y , LAMBDA , q , T , varargin )
     SSM_ = @(varargin){ SSM_(varargin{:}) };
   end
   
-  ENERGYfcn = @(X,S)ENER( X , S );
+  ENERGYfcn = @(X,S)local_ENER( X , S );
   try, [varargin,~,ENERGYfcn] = parseargs( varargin , 'energyfcn','$DEFS$', ENERGYfcn ); end
   
   
@@ -56,7 +56,7 @@ function [q,T] = fitSSM( SSM_ , T_ , Y , LAMBDA , q , T , varargin )
   
   Mq = SSM_( q );
   if isempty( T )
-    vprintf('\|¯Compute the initial rigid T ...\n');
+    vprintf('\|ï¿½Compute the initial rigid T ...\n');
     C = [];
     for c = 1:numel( Mq ), C = [ C ; Mq{c}.xyz ]; end
     T = [ eye(3) , -mean( C , 1 ).' ; 0 0 0 1 ];
@@ -106,7 +106,7 @@ function [q,T] = fitSSM( SSM_ , T_ , Y , LAMBDA , q , T , varargin )
     vprintf('\|_Initial rigid T done: T = %s\n' , uneval(T) );
     
   elseif iscell( T )
-    vprintf('\|¯Refining the initial rigid T ...\n');
+    vprintf('\|ï¿½Refining the initial rigid T ...\n');
     
     T = T{1};
     T = maketransform( 't' , -CY ) * T;
@@ -165,7 +165,7 @@ function [q,T] = fitSSM( SSM_ , T_ , Y , LAMBDA , q , T , varargin )
   
   while 1
     if numel( q ) < Nq, q = [ q ; 0 ]; end
-    vprintf('\|¯Optimizing for %3d q coefficients.\n', numel( q ) );
+    vprintf('\|ï¿½Optimizing for %3d q coefficients.\n', numel( q ) );
     
     for it = 1:optimQ_its
 
@@ -189,8 +189,8 @@ function [q,T] = fitSSM( SSM_ , T_ , Y , LAMBDA , q , T , varargin )
 
       qq = q;
       
-      ENER = @(p) ENERGYfcn( Y , transform( SSM_(p) , T ) )^2  +  LAMBDA^2 * p(:).'*p(:);
-      q = Optimize( @(q)ENER( ApplyContraints(q , RANGE ) ) , q , 'methods',{'conjugate'},...
+      obj_ENER = @(p) ENERGYfcn( Y , transform( SSM_(p) , T ) )^2  +  LAMBDA^2 * p(:).'*p(:);
+      q = Optimize( @(q)obj_ENER( ApplyContraints(q , RANGE ) ) , q , 'methods',{'conjugate'},...
           'ls',{'quadratic'},struct('COMPUTE_NUMERICAL_JACOBIAN',{{'f'}},'MAX_ITERATIONS',25),'noplot','verbose',0);
       
       Mq = SSM_( ApplyContraints( q , RANGE ) );
@@ -214,11 +214,11 @@ function [q,T] = fitSSM( SSM_ , T_ , Y , LAMBDA , q , T , varargin )
   q = ApplyContraints( q , RANGE );
   
 end
-function E = ENER( X , S )
+function E = local_ENER( X , S )
   if iscell( X )
     E = 0;
     for c = 1:numel(X)
-      E = E + ENER( X{c} , S{c} );
+      E = E + local_ENER( X{c} , S{c} );
     end
     return;
   end
