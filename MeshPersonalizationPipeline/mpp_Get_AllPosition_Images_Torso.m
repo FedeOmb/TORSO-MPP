@@ -9,25 +9,50 @@ DICOMs = Loadv( 'DICOMs.mat' ,'DICOMs' );
 
 Pat1 = fieldnames( DICOMs );
 Pat1 = Pat1{1};
-DICOMs = DCMselect( DICOMs , @(i,f)isequal( f{1} , Pat1 ) && prod( i.xSize ) && isempty( regexpi( i.SeriesDescription , 'molli' ) ) && isempty( regexpi( i.SeriesDescription , 'tagging' ) )  );
+fprintf(Pat1);
 
-IMs = DCMgetimages( DICOMs , 'withDATA' );
+% Funzione di selezione sicura per evitare crash se mancano campi (es. xSize o SeriesDescription)
+safeSelect = @(i,f) ( isequal(f{1}, Pat1) && isfield(i,'xSize') && ~isempty(i.xSize) && prod(i.xSize) && isfield(i,'SeriesDescription') && isempty(regexpi(i.SeriesDescription, 'molli')) && isempty(regexpi(i.SeriesDescription, 'tagging')) ) || ( isfield(i,'SeriesDescription') && ~isempty(regexpi(i.SeriesDescription, 'scout|loc|localizer')) );
+DICOMs = DCMselect( DICOMs , safeSelect );
 
+% Rimuoviamo 'withDATA' per catturare anche le serie di cui non sono stati precaricati i pixel
+IMs = DCMgetimages( DICOMs );
 PositionList  = cat(1,IMs.LOCATIONS);
 PositionList(:,6) = [];
 [~,ids] = unique( arrayfun( @(r)[ PositionList{r,:} ] , ( 1:size(PositionList,1) ).' , 'Un',0 ) , 'first' );
+
+% Recuperiamo gli scout eventualmente scartati da 'unique' se hanno locazioni identiche/nulle
+scout_idx = [];
+for k = 1:numel(IMs)
+    try, if ~isempty(regexpi(IMs(k).INFO.SeriesDescription, 'scout|loc|localizer')), scout_idx = [scout_idx; k]; end; catch, end
+end
+ids
+ids = unique([ids(:); scout_idx(:)]);
+scout_idx
+
 w = sort( ids );
+w
 
 BS = cell(0,1);  %BS stands for BodySlices
 for i = w(:).'
   try
   DIC = IMs(i);
 
-  I = DIC.DATA;
   H = DIC.INFO;
+  I = [];
+  if isfield(DIC, 'DATA')
+      I = DIC.DATA;
+  elseif isfield(H, 'Filename') && isfile(H.Filename)
+      % Forza la lettura dei pixel dal disco se assenti in memoria
+      fprintf("DATA field not present, reading pixel from disk")
+      try, I = dicomread(H.Filename); catch, end
+  end
+
 %   H = kpfields( H , {'MediaStorageSOPInstanceUID','SeriesInstanceUID','SeriesDescription','PatientName','PatientID''PatientBirthDate','PatientSex','PatientAge','PatientSize','PatientWeight','SequenceName','PatientPosition','SeriesNumber','ImagePositionPatient','ImageOrientationPatient','SliceLocation','PixelSpacing','xDirname','xFilename','xPatientName','xDatenum','xSize','xSpatialTransform'} );
 
   BS{end+1,1} = I3D( { I , H } );
+  catch ME
+    fprintf('Attenzione: Serie %d ("%s") scartata durante la conversione I3D. Errore: %s\n', IMs(i).INFO.SeriesNumber, IMs(i).INFO.SeriesDescription, ME.message);
   end
 end
 
@@ -49,8 +74,8 @@ if isempty(HS), try, HS = Loadv( 'HC0' , 'HC0' ); end; end
 if isempty(HS), try, HS = Loadv( 'HCm' , 'HCm' ); end; end
 HS( cellfun('isempty',HS(:,1)) ,:) = [];
 
-w = ismember( arrayfun( @(i)BS{i,1}.INFO.SeriesInstanceUID , 1:size(BS,1) , 'un',0) ,...
-              arrayfun( @(i)HS{i,1}.INFO.SeriesInstanceUID , 1:size(HS,1) , 'un',0) );
+w = ismember( arrayfun( @(i)BS{i,1}.INFO.MediaStorageSOPInstanceUID , 1:size(BS,1) , 'un',0) ,...
+              arrayfun( @(i)HS{i,1}.INFO.MediaStorageSOPInstanceUID , 1:size(HS,1) , 'un',0) );
 BS(w,:) = [];
 BS = [ BS ; HS(:,1) ];
 end
@@ -70,8 +95,8 @@ try
 % if isempty(HS), try, HS = Loadv( 'HC' , 'HC' ); end; end
 % if isempty(HS), try, HS = Loadv( 'HS' , 'HS' ); end; end
 % HS( cellfun('isempty',HS(:,1)) ,:) = [];
-w = ismember( arrayfun( @(i)BS{i,1}.INFO.SeriesInstanceUID , 1:size(BS,1) , 'un',0) ,...
-              arrayfun( @(i)HS{i,1}.INFO.SeriesInstanceUID , 1:size(HS,1) , 'un',0) );
+w = ismember( arrayfun( @(i)BS{i,1}.INFO.MediaStorageSOPInstanceUID , 1:size(BS,1) , 'un',0) ,...
+              arrayfun( @(i)HS{i,1}.INFO.MediaStorageSOPInstanceUID , 1:size(HS,1) , 'un',0) );
 
 BS = [ BS( w ,:) ; BS( ~w ,:) ];
 end
@@ -122,27 +147,32 @@ fclose(fileID);
 accepted_torso_images = []; check = {'InlineVF','Scout','Loc','Localizer'}; % Aggiunte parole chiave generiche
 fileID =fopen(strcat(SUBJECT_DIR,'/TORSO_filtered.list'),'w');
 for i = 1:numel(BS)
-  % Cerca parole chiave se presenti, ignorando il case
+  % Cerca parole chiave, ignorando il case
   condn = find( ~cellfun( @isempty, cellfun(@(x) regexpi(BS{i}.INFO.SeriesDescription,x), check, 'UniformOutput', false )));
   
-  % Se non ci sono etichette UKBB, usiamo un fallback basato sulla geometria
-  if isempty(condn) || true % Forza il controllo geometrico per Sunnybrook
+  should_accept = false;
+  % Se troviamo una delle parole chiave, accettiamo l'immagine.
+  if ~isempty(condn)
+      should_accept = true;
+  else
+    % Se non ci sono etichette standard (es. UKBB), usiamo un fallback basato sulla geometria
+    % per trovare comunque le immagini scout/localizer.
     same = 0;
     if i>1 && BS{i}.INFO.SeriesNumber == BS{i-1}.INFO.SeriesNumber
       if abs(BS{i}.INFO.xZLevel - BS{i-1}.INFO.xZLevel) < 5,  same = 1; end
     end
     try, distance = BS{i}.INFO.xZLevel - BS{i-1}.INFO.xZLevel; catch, distance = 0; end
     
-    % Accettiamo le slice che hanno una distanza ragionevole o se hanno un FOV abbastanza ampio
-    if same == 0 || abs(distance) > 10 % Abbassato il threshold di distanza per accettare più slice scout
-       fprintf(fileID,'%3d -  ' , i );
-       fprintf(fileID,'%03d.' , BS{i}.INFO.SeriesNumber );
-       fprintf(fileID,'%s  ' , BS{i}.INFO.SeriesDescription );
-       fprintf(fileID,'%s  ' , BS{i}.INFO.PlaneName );
-       fprintf(fileID,'(%g)' , BS{i}.INFO.xZLevel );
-       fprintf(fileID,'\n');
-       accepted_torso_images = [accepted_torso_images,i];
+    % Accettiamo le slice che hanno una distanza ragionevole (probabilmente serie diverse)
+    % o se sono le prime di una serie.
+    if same == 0 || abs(distance) > 10 % Il valore originale di 40 era troppo restrittivo
+       should_accept = true;
     end
+  end
+
+  if should_accept
+     fprintf(fileID,'%3d -  %03d. %s  %s  (%g)\n' , i, BS{i}.INFO.SeriesNumber, BS{i}.INFO.SeriesDescription, BS{i}.INFO.PlaneName, BS{i}.INFO.xZLevel );
+     accepted_torso_images = [accepted_torso_images,i];
   end
 end
 fclose(fileID);
