@@ -1,12 +1,14 @@
 
 clear all;
-run( '/home/federico/TORSO-MPP/MPP/mppSETUP.m' );
-directf = '/home/federico/TORSO-MPP';
+%run( '/home/federico/TORSO-MPP/MPP/mppSETUP.m' ); %LINUX
+run( 'C:\Users\fedeo\Desktop\digital-twin-framework-camps\TORSO-MPP\torso-mpp\mppSETUP.m' ); %WINDOWS
+%directf = '/home/federico/TORSO-MPP'; %LINUX
+directf= 'C:\Users\fedeo\Desktop\digital-twin-framework-camps\TORSO-MPP'; %WINDOWS
 %addpath( [directf, 'MPP'] ); run( [directf, 'MPP/mppSETUP.m'] );
 
 %% some preferences
 mppOption TORSO_MODEL_DIR  = fullfile(fileparts(which('mpp_Read_DICOMs')),'TORSO');
-mppOption CLEANOUT_HSs     = true;
+mppOption CLEANOUT_HSs     = false; %default true
 mppOption SAVE_FIGURES     = false;
 mppOption VERTICAL_FLIP_IN_MONTAGES = true;  %controls the montage appeareance
 
@@ -26,8 +28,9 @@ mppOption FLIP_FIX_ANTERIOR_INFERIOR = false;  %used in mpp_Fix_Heart_Contours
 mppOption VERSION          = ['Torso-reconstruction:1.0'];
 mppOption MAKE_VIDEO       = false;
 mppOption DIR              = directf;
-mppOption Torso_figures    = false;
-mppOption pathfull = ['/home/federico/TORSO-MPP/MPP/'];
+mppOption Torso_figures    = false; %default=false
+%mppOption pathfull = ['/home/federico/TORSO-MPP/MPP/']; %LINUX
+mppOption pathfull = ['C:\Users\fedeo\Desktop\digital-twin-framework-camps\TORSO-MPP\torso-mpp\']; %WINDOWS
 
 %% LIST of SUBJECTS
 cd(directf); files = dir(fullfile(directf, 'data'));
@@ -45,7 +48,7 @@ for ff = 1:numel( SUBJECT_DIRs )
   mpp_Get_AllPosition_Images_Torso              %output: BS.mat
   
   mpp_Segmented_Contours_Torso                  %output: BC0.mat
-  % mpp_Manual_Contour_Torso_Biobank            %output: BC.mat
+  % mpp_Manual_Contour_Torso_Biobank            %output: BC.mat % da non eseguire
   mpp_Automated_Contours_Torso
   
   mpp_Fit_Vest_Biobank

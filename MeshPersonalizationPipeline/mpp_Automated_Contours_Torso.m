@@ -23,9 +23,15 @@ end
 
 %
 mppOption pathfull
-setenv('PATH', ['/home/federico/TORSO-MPP/.venvmpp/bin', pathsep, getenv('PATH')]);
-system(['"/home/federico/TORSO-MPP/.venvmpp/bin/python" "', pathfull, 'PreTrained\torso_contouring.py"', ' --dir_img ', Fullfile('mpp', 'torso-images'),...
-  ' --model_path ', fullfile(pathfull, 'PreTrained', 'torso_cnt_N65_35_cycle_2.pt')]);
+
+%LINUX PATH
+%setenv('PATH', ['/home/federico/TORSO-MPP/.venvmpp/bin', pathsep, getenv('PATH')]);
+% WINDOWS PATH
+setenv('PATH', ['C:\Users\fedeo\Desktop\digital-twin-framework-camps\TORSO-MPP\.mppvenv\Scripts', pathsep, getenv('PATH')]);
+%system(['"/home/federico/TORSO-MPP/.venvmpp/bin/python" "', pathfull, 'PreTrained\torso_contouring.py"', ' --dir_img ', Fullfile('mpp', 'torso-images'),...
+%  ' --model_path ', fullfile(pathfull, 'PreTrained', 'torso_cnt_N65_35_cycle_2.pt')]);
+system(['"C:\Users\fedeo\Desktop\digital-twin-framework-camps\TORSO-MPP\.mppvenv\Scripts\python" "', pathfull, 'PreTrained\torso_contouring.py"', ' --dir_img ', Fullfile('mpp', 'torso-images'),...
+    ' --model_path ', fullfile(pathfull, 'PreTrained', 'torso_cnt_N65_35_cycle_2.pt')]);
 
 %%
 

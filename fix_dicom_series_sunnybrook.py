@@ -54,7 +54,9 @@ def fix_series_description(series_dir, type):
                         ds.save_as(path)
 
 if __name__ == "__main__":
-    root_dir = os.path.join("..", "data", "sb301","DICOMS")
+    root_dir = os.path.join("..", "data", "sb501","DICOMS")
     verify_series_by_orientation(root_dir)
     series_dir = os.path.join(root_dir, "CINELAX_8")
     fix_series_description(series_dir, "LAX_4Ch")
+    series_dir = os.path.join(root_dir, "CINELAX_14")
+    fix_series_description(series_dir, "LAX_2Ch")
