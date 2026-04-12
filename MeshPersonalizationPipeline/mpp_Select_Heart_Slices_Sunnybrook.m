@@ -241,6 +241,9 @@ HS = [ HS ; SA ];
 
 %%
 
+% Rimuove eventuali placeholder vuoti (come la vista LVOT mancante) prima del salvataggio
+HS( cellfun('isempty',HS(:,1)) ,:) = [];
+
 Save( 'HS.mat' , 'HS' );
 
 end
