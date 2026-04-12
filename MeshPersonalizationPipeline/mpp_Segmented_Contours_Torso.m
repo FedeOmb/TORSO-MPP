@@ -15,9 +15,12 @@ end
 
 %%
 mppOption pathfull
-setenv('PATH', ['/home/federico/TORSO-MPP/.venvmpp/bin', pathsep, getenv('PATH')]);
-system(['"/home/federico/TORSO-MPP/.venvmpp/bin/python" "', pathfull, 'PreTrained/torso_segmentor.py"', ' --dir_img ', Fullfile('mpp', 'torso-images'),...
-  ' --model_path ', fullfile(pathfull, 'PreTrained', 'N15_cycle_4.pt')]);
+%LINUX PATH
+%setenv('PATH', ['/home/federico/TORSO-MPP/.venvmpp/bin', pathsep, getenv('PATH')]);
+% WINDOWS PATH
+setenv('PATH', ['C:\Users\fedeo\Desktop\digital-twin-framework-camps\TORSO-MPP\.mppvenv\Scripts', pathsep, getenv('PATH')]);
+%system(['"/home/federico/TORSO-MPP/.venvmpp/bin/python" "', pathfull, 'PreTrained/torso_segmentor.py"', ' --dir_img ', Fullfile('mpp', 'torso-images'),' --model_path ', fullfile(pathfull, 'PreTrained', 'N15_cycle_4.pt')]);
+system(['"C:\Users\fedeo\Desktop\digital-twin-framework-camps\TORSO-MPP\.mppvenv\Scripts\python" "', pathfull, 'PreTrained\torso_segmentor.py"', ' --dir_img ', Fullfile('mpp', 'torso-images'),' --model_path ', fullfile(pathfull, 'PreTrained', 'N15_cycle_4.pt')]);
 
 %%
 BC0 = BS;
