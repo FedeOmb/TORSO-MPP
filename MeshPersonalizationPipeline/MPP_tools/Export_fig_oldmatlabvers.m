@@ -25,6 +25,7 @@ function Export_fig( hf , fn , varargin )
   end
   
   
+  export_fig( hf , fn , varargin{:} );
   try
       % Nelle versioni recenti di MATLAB (R2020a+), exportgraphics e' la funzione standard
       exportgraphics(hf, fn, 'Resolution', 300);
@@ -39,3 +40,4 @@ function Export_fig( hf , fn , varargin )
   
   fprintf('Picture (figure) saved in "%s"\n', fn );
 end
+
