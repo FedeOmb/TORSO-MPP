@@ -28,8 +28,34 @@ function enableVTK
        case 'MACI64'
         setenv( 'path' , [ getenv('path') , ';' , fullfile( fileparts(which('enableVTK')) , 'vtk' , 'maci64' ) ] );
         
-      otherwise
-        error('cannot enable VTK within a matlab runtime.')
+      case 'GLNXA64'
+          fprintf('linux system recognized')
+        vtkPath = '/home/federico/vtk/install/lib';
+
+        % Append to LD_LIBRARY_PATH and PATH if we found candidates
+          existing = getenv('LD_LIBRARY_PATH');
+          fprintf(existing)
+          if isempty(existing)
+            setenv('LD_LIBRARY_PATH', vtkPath);
+          else
+            setenv('LD_LIBRARY_PATH', [vtkPath pathsep existing]);
+          end
+       
+        % if ~isempty(binPaths)
+        %   existingp = getenv('PATH');
+        %   newp = strjoin(binPaths,pathsep);
+        %   setenv('PATH', [newp pathsep existingp]);
+        % end
+
+        % Try to initialize VTK; fall back to a helpful error if it fails
+        try
+          evalc( 'vtkPolyDataReader()' );
+        catch
+         %continue to the final check below which will throw a clear error
+        end
+
+        otherwise
+          error('cannot enable VTK within a matlab runtime. Ensure VTK is installed and its libraries are on LD_LIBRARY_PATH.')
     end
   end
 
@@ -38,5 +64,5 @@ function enableVTK
   catch
     error('VTK couldn''t be enabled.');
   end
-  
+
 end
