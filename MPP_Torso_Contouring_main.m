@@ -1,9 +1,9 @@
 
 clear all;
-%run( '/home/federico/TORSO-MPP/MPP/mppSETUP.m' ); %LINUX
-run( 'C:\Users\fedeo\Desktop\digital-twin-framework-camps\TORSO-MPP\torso-mpp\mppSETUP.m' ); %WINDOWS
-%directf = '/home/federico/TORSO-MPP'; %LINUX
-directf= 'C:\Users\fedeo\Desktop\digital-twin-framework-camps\TORSO-MPP'; %WINDOWS
+run( '/home/federico/TORSO-MPP/MPP/mppSETUP.m' ); %LINUX
+%run( 'C:\Users\fedeo\Desktop\digital-twin-framework-camps\TORSO-MPP\torso-mpp\mppSETUP.m' ); %WINDOWS
+directf = '/home/federico/TORSO-MPP'; %LINUX
+%directf= 'C:\Users\fedeo\Desktop\digital-twin-framework-camps\TORSO-MPP'; %WINDOWS
 %addpath( [directf, 'MPP'] ); run( [directf, 'MPP/mppSETUP.m'] );
 
 %% some preferences
@@ -28,9 +28,9 @@ mppOption FLIP_FIX_ANTERIOR_INFERIOR = false;  %used in mpp_Fix_Heart_Contours
 mppOption VERSION          = ['Torso-reconstruction:1.0'];
 mppOption MAKE_VIDEO       = false;
 mppOption DIR              = directf;
-mppOption Torso_figures    = false; %default=false
-%mppOption pathfull = ['/home/federico/TORSO-MPP/MPP/']; %LINUX
-mppOption pathfull = ['C:\Users\fedeo\Desktop\digital-twin-framework-camps\TORSO-MPP\torso-mpp\']; %WINDOWS
+mppOption Torso_figures    = true; %default=false
+mppOption pathfull = ['/home/federico/TORSO-MPP/MPP/']; %LINUX
+%mppOption pathfull = ['C:\Users\fedeo\Desktop\digital-twin-framework-camps\TORSO-MPP\torso-mpp\']; %WINDOWS
 
 %% LIST of SUBJECTS
 cd(directf); files = dir(fullfile(directf, 'data'));
