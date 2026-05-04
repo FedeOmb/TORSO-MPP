@@ -7,6 +7,7 @@ if exist('MPP_ERROR','var')&&~isempty(MPP_ERROR);fprintf(2,'MPP_ERROR is "%s"   
 
 mppOption Torso_figures     false
 mppOption TORSO_MODEL_DIR
+fprintf(TORSO_MODEL_DIR)
 Mb_ = loadv( fullfile( TORSO_MODEL_DIR , 'BODY_MODEL' ) , 'Mb_' );
 Mv_ = loadv( fullfile( TORSO_MODEL_DIR , 'VEST_MODEL' ) , 'Mv_' );
 
@@ -23,13 +24,10 @@ try
   if isempty( centerH ), try, centerH = Loadv( 'HEARTmesh' , 'HEART' );      centerH = mean( centerH.xyz , 1 ); end; end
   if isempty( centerH ), try, centerH = read_VTK( Fullfile( 'HEART.vtk' ) ); centerH = mean( centerH.xyz , 1 ); end; end
   if isempty( centerH ), try, [~,centerH] = MeshVolume( struct('xyz', ecgI.nodes ,'tri', ecgI.mesh ) ); end; end
-  centerH
   if isempty( centerH ), try
       HS_ = [];
       if isempty( HS_ ), try, HS_ = Loadv('HS','HS'); end; end
       if isempty( HS_ ), try, HS_ = Loadv('HC','HC'); HS_ = HS_(:,1); end; end
-      
-      HS_
       
       A = []; B = [];
       for r = 1:size(HS_,1) %unique( round( linspace(1,size(IS,1),10) ))
@@ -47,7 +45,6 @@ try
       end
       % This is the point closest to all the intersection lines between the slices
       centerH = (A.'*A) \ ( A.'*B );
-      centerH
       clear HS_ A B;
     end; end
   
