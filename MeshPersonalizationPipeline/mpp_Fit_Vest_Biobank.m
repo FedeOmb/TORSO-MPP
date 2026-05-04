@@ -56,7 +56,7 @@ try
   % The translation for placing the body model in "subject's coordinates"
   R = maketransform( 't' , -centerH0 , 't' , centerH  );
   
-  clear HEART0 centerH0 centerH;
+  clear centerH0; % Manteniamo HEART0 e centerH per l'esportazione finale
 catch
   error('Impossible to compute initial R');
   R = [];
@@ -228,6 +228,15 @@ Save( 'fittedVEST.mat' , 'q' , 'R' , 'VEST' , 'BODY' , 'P' );
 
 write_VTP( VEST , Fullfile( 'mpp' , 'VEST0.vtk' ) ,'ascii');
 write_VTP( BODY , Fullfile( 'mpp' , 'BODY0.vtk' ) ,'ascii');
+
+% Esporta la mesh del cuore di riferimento allineata e il suo centro
+if exist('HEART0', 'var') && exist('R', 'var')
+    HEART_aligned = transform(HEART0, R);
+    write_VTP(HEART_aligned, Fullfile('mpp', 'HEART_aligned.vtk'), 'ascii');
+    
+    centerH_final = mean(HEART_aligned.xyz, 1);
+    save(Fullfile('mpp', 'HeartCenter.mat'), 'centerH_final', 'centerH', 'R');
+end
 
 % hFig = Figure(); plotMESH( transform( Mv_(q) , R ) );
 % hplotMESH( transform( Mb_(q) , R ) ,'FaceColor','none');
