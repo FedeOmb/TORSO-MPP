@@ -82,22 +82,18 @@ function [ DATA , X , Y , Z , R , INFO , infos ] = DCMread( D , varargin )
 
   
   %% sorting phases
-  orderATT = {'TriggerTime','InstanceNumber'}; % Ordinamento temporale corretto di default
+  orderATT = {}; %{'xDatenum','TriggerTime','InstanceNumber'}
   try,[varargin,i,orderATT] = parseargs(varargin,'ORDERatt','orderattribute','$DEFS$',orderATT); end
   if ~isa( orderATT , 'function_handle' ) && ~iscell( orderATT ), orderATT = { orderATT }; end
   if numel( orderATT )
     for z = 1:nZ
-      orderValue = zeros(nP, numel(orderATT));
+      orderValue = [];
       for i = 1:nP
         if isa( orderATT , 'function_handle' )
           orderValue(i,:) = orderATT( infos{z,i} );
         else
           for a = 1:numel(orderATT)
-            try
-              val = infos{z,i}.(orderATT{a});
-              if ~isempty(val), orderValue(i,a) = val(1); end
-            catch
-            end
+            orderValue(i,a) = infos{z,i}.(orderATT{a});
           end
         end
       end

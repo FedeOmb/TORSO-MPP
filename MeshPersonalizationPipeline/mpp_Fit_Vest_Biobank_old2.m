@@ -46,24 +46,8 @@ try
         end
       end
       % This is the point closest to all the intersection lines between the slices
-      if cond(A.'*A) < 1e8
-        centerH = (A.'*A) \ ( A.'*B );
-        centerH = centerH.';
-      else
-        % Fallback robusto per dataset (es. Sunnybrook) con fette prevalentemente parallele
-        % Se mancano viste incrociate (es. 2Ch/3Ch), le linee di intersezione sono parallele
-        % e il sistema diventa singolare. Usiamo il baricentro dei centri delle fette.
-        warning('Sistema instabile per il calcolo di centerH. Utilizzo il baricentro delle fette.');
-        c_pts = zeros(size(HS_,1), 3);
-        for idx_r = 1:size(HS_,1)
-          S = HS_{idx_r,1};
-          px = size(S.data,1)/2 * S.INFO.PixelSpacing(1);
-          py = size(S.data,2)/2 * S.INFO.PixelSpacing(2);
-          c = S.SpatialTransform * [px; py; 0; 1];
-          c_pts(idx_r,:) = c(1:3).';
-        end
-        centerH = mean(c_pts, 1);
-      end
+      centerH = (A.'*A) \ ( A.'*B );
+      centerH
       clear HS_ A B;
     end; end
   

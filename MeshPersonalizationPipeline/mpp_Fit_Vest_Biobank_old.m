@@ -168,6 +168,11 @@ for it = 1:20
   [~,cp] = ClosestElement( BODYr , Pr ); dist = fro(cp-Pr,2); mean(dist)
   thres = max(min(prctile(dist,95), 25), 15); Pr = Pr(dist < thres,:); cp = cp(dist < thres,:);
   
+  if isempty(Pr)
+      warning('Nessun punto rimasto per il refinement. Interruzione del ciclo.');
+      break;
+  end
+  
   VESTr.xyz = InterpolatingSplines( cp , cp + ( Pr - cp )*0.1 , VESTr.xyz , 'r','lambda',size(Pr,1)*1e3);
   BODYr.xyz = InterpolatingSplines( cp , cp + ( Pr - cp )*0.1 , BODYr.xyz , 'r','lambda',size(Pr,1)*1e3);
   clear cp dist thres;

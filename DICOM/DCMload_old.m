@@ -94,11 +94,7 @@ function [I,sname] = DCMload( S , varargin )
       end
     end
     T = T - min(T);
-    
-    % Assegna I.T solo se i tempi calcolati sono strettamente crescenti
-    if ~any( isnan(T) ) && all(diff(T) > 0)
-      I.T = T; 
-    end
+    if ~any( isnan(T) ), I.T = T; end
   end
   
 
