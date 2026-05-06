@@ -145,7 +145,7 @@ fclose(fileID);
 
 %% perform some pruning of the whole list of images
 accepted_torso_images = []; check = {'InlineVF','Scout','Loc','Localizer'}; % Aggiunte parole chiave generiche
-fileID =fopen(strcat(SUBJECT_DIR,'/TORSO_filtered.list'),'w');
+fileID = fopen(fullfile(SUBJECT_DIR,'TORSO_filtered.list'),'w');
 for i = 1:numel(BS)
   % Cerca parole chiave, ignorando il case
   condn = find( ~cellfun( @isempty, cellfun(@(x) regexpi(BS{i}.INFO.SeriesDescription,x), check, 'UniformOutput', false )));

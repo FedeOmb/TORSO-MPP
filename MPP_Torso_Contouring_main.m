@@ -1,15 +1,18 @@
 
 clear all;
-run( '/home/federico/TORSO-MPP/MPP/mppSETUP.m' ); %LINUX
-%run( 'C:\Users\fedeo\Desktop\digital-twin-framework-camps\TORSO-MPP\torso-mpp\mppSETUP.m' ); %WINDOWS
-directf = '/home/federico/TORSO-MPP'; %LINUX
-%directf= 'C:\Users\fedeo\Desktop\digital-twin-framework-camps\TORSO-MPP'; %WINDOWS
+if isunix
+    run( '/home/federico/TORSO-MPP/MPP/mppSETUP.m' ); %LINUX
+    directf = '/home/federico/TORSO-MPP'; %LINUX
+elseif ispc
+    run( 'C:\Users\fedeo\Desktop\digital-twin-framework-camps\TORSO-MPP\torso-mpp\mppSETUP.m' ); %WINDOWS
+    directf = 'C:\Users\fedeo\Desktop\digital-twin-framework-camps\TORSO-MPP'; %WINDOWS  
+end
 %addpath( [directf, 'MPP'] ); run( [directf, 'MPP/mppSETUP.m'] );
 
 %% some preferences
 mppOption TORSO_MODEL_DIR  = fullfile(fileparts(which('mpp_Read_DICOMs')),'TORSO');
 mppOption CLEANOUT_HSs     = false; %default true
-mppOption SAVE_FIGURES     = false;
+mppOption SAVE_FIGURES     = true; %default false
 mppOption VERTICAL_FLIP_IN_MONTAGES = true;  %controls the montage appeareance
 
 mppOption REDO_LIST        = true;  %used in mpp_Select_Heart_Slices
@@ -29,9 +32,12 @@ mppOption VERSION          = ['Torso-reconstruction:1.0'];
 mppOption MAKE_VIDEO       = false;
 mppOption DIR              = directf;
 mppOption Torso_figures    = true; %default=false
-mppOption pathfull = ['/home/federico/TORSO-MPP/MPP/']; %LINUX
-%mppOption pathfull = ['C:\Users\fedeo\Desktop\digital-twin-framework-camps\TORSO-MPP\torso-mpp\']; %WINDOWS
-
+mppOption pathfull
+if isunix
+    mppOption pathfull = ['/home/federico/TORSO-MPP/MPP/']; %LINUX
+elseif ispc
+    mppOption pathfull = ['C:\Users\fedeo\Desktop\digital-twin-framework-camps\TORSO-MPP\torso-mpp\']; %WINDOWS
+end
 %% LIST of SUBJECTS
 cd(directf); files = dir(fullfile(directf, 'data'));
 files = files([files.isdir] & ~cellfun(@(x) strcmp(x,'.'),{files.name})&~cellfun(@(x) strcmp(x,'..'),{files.name}));
